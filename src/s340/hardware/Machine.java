@@ -18,7 +18,7 @@ public class Machine
 	public final  int CONSOLE = 1;
 	public final  int DISK1 = 2;
 	public final  int DISK2 = 3;
-	public final int NUM_DEVICES = 4;
+	public final static int NUM_DEVICES = 4;
 
 	// the various pieces of hardware in a machine
 	public final InterruptRegisters interruptRegisters;

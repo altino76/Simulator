@@ -14,7 +14,7 @@ public class CheckValid
 	 * @param n -- the device number.
 	 */
 
-	public static void deviceNumber(int n)
+	public static  void deviceNumber(int n)
 	{
 		if (n < 0 || n >= Machine.NUM_DEVICES)
 		{

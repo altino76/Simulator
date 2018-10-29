@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import s340.hardware.DeviceControllerOperations;
 import s340.hardware.IInterruptHandler;
 import s340.hardware.ISystemCallHandler;
 import s340.hardware.ITrapHandler;
@@ -20,9 +21,10 @@ import s340.hardware.Machine;
 import s340.hardware.Trap;
 import s340.hardware.exception.MemoryFault;
 import s340.software.FreeSpace;
-import s340.software.IORequest;
 import s340.software.ProcessControlBlock;
 import s340.software.ProcessState;
+import static s340.software.os.SystemCall.SBRK;
+import static s340.software.os.SystemCall.WRITE_CONSOLE;
 
 /*
  * The operating system that controls the software running on the S340 CPU.
@@ -30,7 +32,7 @@ import s340.software.ProcessState;
  * The operating system acts as an interrupt handler, a system call handler, and
  * a trap handler.
  */
-public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, ITrapHandler {
+public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, ITrapHandler, DeviceControllerOperations {
 
     // the machine on which we are running.
     private final Machine machine;
@@ -39,9 +41,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
 
     private static final int PROCESS_TABLE_SIZE = 10;
     private ProcessControlBlock[] processTable;
-    private Queue<IORequest> [] queues;
-//    Queue<IORequest> data = new LinkedList<>();
-
+    private Queue<IORequest>[] queues;
     //Tracks the current process that was just running
     //this is used to calculate the next process to run and tells where to save registers in PCB List
     private int currentProcess;
@@ -52,20 +52,16 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     public OperatingSystem(Machine machine) throws MemoryFault {
         this.freeSpaces = new ArrayList<FreeSpace>();
         this.freeSpaces.add(new FreeSpace(0, Machine.MEMORY_SIZE));
-        this.queues = new Queue [machine.NUM_DEVICES] ;
+        this.queues = new Queue[machine.NUM_DEVICES];
         //this.ConsoleQueue = new Queue<LinkedList>();
         this.processTable = new ProcessControlBlock[PROCESS_TABLE_SIZE];
         this.currentProcess = 0;
         this.machine = machine;
-        for(int i=0;i<machine.NUM_DEVICES; i++)
-        {
-              queues[i].(machine.devices[i]);  
-           
+        //this initiates the queues
+        for (int i = 0; i < machine.NUM_DEVICES; i++) {
+            queues[i] = new LinkedList<IORequest>();
         }
 
-            
-            
-            
         //creation of the wait program
         ProgramBuilder b1 = new ProgramBuilder();
         b1.start(0);    //not an actual instruction just sets start point
@@ -180,6 +176,10 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         machine.cpu.runProg = true;
     }
 
+    public int write_console(int acc) {
+
+    }
+
     public int sbrk(int acc) {
         //main structure for the brokerage of sbrk()
         boolean keepGoing = true;
@@ -238,8 +238,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         //we move everything over
         for (int i = this.processTable[currentProcess].getBase();
                 i < this.processTable[currentProcess].getBase() + this.processTable[currentProcess].getLimit();
-                i++) 
-        {
+                i++) {
 
             try {
                 //loading and storing to siphon all our data over bit by bit
@@ -255,7 +254,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                     this.processTable[currentProcess].getLimit());
 
             freeSpaces.add(f);
-            
+
             int oldBase = sufficientFree.getBase();
             int oldLimit = sufficientFree.getLimit();
             //setting the new base and limit of the new program and freespace
@@ -263,8 +262,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             this.processTable[currentProcess].setLimit(this.processTable[currentProcess].getLimit() + acc);
             sufficientFree.setBase(sufficientFree.getBase() + this.processTable[currentProcess].getLimit() + acc);
             sufficientFree.setLimit(sufficientFree.getLimit() - (this.processTable[currentProcess].getLimit() + acc));
-            
-            
+
             freeSpaces.add(new FreeSpace(oldBase, oldLimit));
 
         }
@@ -437,8 +435,20 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         if (!machine.cpu.runProg) {
             return;
         }
+        switch (callNumber) {
+            case SBRK:
+                sbrk(machine.cpu.acc);
+                break;
+            case WRITE_CONSOLE:
+//                write_console(machine.cpu.acc);
+                if (queues[machine.cpu.acc].isEmpty() == false){
+                    queues[machine.cpu.acc].add(e);
+                }
+               x else {
+                    allow the program to use the console
+                }
 
-        sbrk(machine.cpu.acc);
+        }
 
         this.restoreRegisters();
 
@@ -463,5 +473,11 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         }
         //  end of code to leave
 
+    }
+
+    private static class IOReuquest extends IORequest {
+
+        public IOReuquest(int i) {
+        }
     }
 }

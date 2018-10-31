@@ -144,7 +144,6 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 if (processTable[i] == null || processTable[i].getStatus() == ProcessState.END) {
 
                     int programSize = program.getCode().length + program.getDataSize();
-                    System.out.println("Size: " + programSize);
                     FreeSpace f = findFreeSpace(programSize); //(program.getDataSize() * 2) + program.getStart() = limit
 
                     loadProgram(program, f.getBase());
@@ -166,17 +165,24 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 }
             }
         }
-        //***The following in Schedule is to check to make sure that our scheduler works**
-        for (int i = 0; i < processTable.length; i++) {
-            if (processTable[i] != null) {
-                System.out.println(i + " " + processTable[i]);
-            }
-        }
+//        //***The following in Schedule is to check to make sure that our scheduler works**
+//        for (int i = 0; i < processTable.length; i++) {
+//            if (processTable[i] != null) {
+//                System.out.println(i + " " + processTable[i]);
+//            }
+//        }
         // leave this as the last line
         machine.cpu.runProg = true;
     }
 
-    public int write_console(int acc) {
+    public void write_console(int acc) {
+        // sleep each process
+        this.processTable[currentProcess].setStatus(ProcessState.WAITING);
+
+        //doe each device control operation 
+        this.machine.devices[Machine.CONSOLE].controlRegister.register[0] = DeviceControllerOperations.WRITE;
+        this.machine.devices[Machine.CONSOLE].controlRegister.register[1] = acc;
+        this.machine.devices[Machine.CONSOLE].controlRegister.latch();
 
     }
 
@@ -396,8 +402,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 currentProcess = this.chooseNextProcess();
                 break;
             case Trap.END:
-                System.err.println("PROCESS FINISHED");
-                //set prog to finished and choose new prog
+               //set prog to finished and choose new prog
                 //registers already saved
                 this.processTable[this.currentProcess].setStatus(ProcessState.END);
                 currentProcess = this.chooseNextProcess();
@@ -440,14 +445,13 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 sbrk(machine.cpu.acc);
                 break;
             case WRITE_CONSOLE:
-//                write_console(machine.cpu.acc);
-                if (queues[machine.cpu.acc].isEmpty() == false){
-                    queues[machine.cpu.acc].add(e);
-                }
-               x else {
-                    allow the program to use the console
-                }
 
+                if (queues[machine.cpu.acc].isEmpty() == false) {
+                    queues[machine.cpu.acc].add(new IORequest());
+                } else {
+                    write_console(machine.cpu.acc);
+                }
+                break;
         }
 
         this.restoreRegisters();
@@ -475,9 +479,5 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
 
     }
 
-    private static class IOReuquest extends IORequest {
-
-        public IOReuquest(int i) {
-        }
-    }
 }
+

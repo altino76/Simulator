@@ -13,5 +13,5 @@ package s340.software;
 
 //an enum used to track the current state of each Program, stored in the process control block
 public enum ProcessState {
-    READY, RUNNING,END;
+    READY, RUNNING,END, WAITING;
 }

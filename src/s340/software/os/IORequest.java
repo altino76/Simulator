@@ -10,5 +10,7 @@ package s340.software.os;
  * @author altino
  */
 public class IORequest {
+    private Program program;
+
     
 }

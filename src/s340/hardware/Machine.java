@@ -15,7 +15,7 @@ public class Machine
 
 	// device numbers
 	public final  int KEYBOARD = 0;
-	public final  int CONSOLE = 1;
+	public final static  int CONSOLE = 1;
 	public final  int DISK1 = 2;
 	public final  int DISK2 = 3;
 	public final static int NUM_DEVICES = 4;

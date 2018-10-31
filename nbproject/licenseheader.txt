@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Project for CSC 340
+${licensePrefix}Collabrative efforts of Alberto, Andrew and nathan{licensePrefix}
+<#if licenseLast??>
+${licenseLast}
+</#if>

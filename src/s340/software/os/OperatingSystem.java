@@ -176,9 +176,6 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     }
 
     public void write_console(int acc) {
-        // sleep each process
-        this.processTable[currentProcess].setStatus(ProcessState.WAITING);
-
         //doe each device control operation 
         this.machine.devices[Machine.CONSOLE].controlRegister.register[0] = DeviceControllerOperations.WRITE;
         this.machine.devices[Machine.CONSOLE].controlRegister.register[1] = acc;
@@ -445,9 +442,9 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 sbrk(machine.cpu.acc);
                 break;
             case WRITE_CONSOLE:
-
-                if (queues[machine.cpu.acc].isEmpty() == false) {
-                    queues[machine.cpu.acc].add(new IORequest());
+                this.processTable[currentProcess].setStatus(ProcessState.WAITING);
+                if (queues[Machine.CONSOLE].isEmpty() == false) {
+                    queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
                 } else {
                     write_console(machine.cpu.acc);
                 }

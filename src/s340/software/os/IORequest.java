@@ -5,12 +5,17 @@
  */
 package s340.software.os;
 
+import s340.software.ProcessControlBlock;
+
 /**
  *
  * @author altino
  */
 public class IORequest {
-    private Program program;
-
+    private ProcessControlBlock block;
     
+    public IORequest(ProcessControlBlock block)
+    {
+        this.block = block;
+    }
 }

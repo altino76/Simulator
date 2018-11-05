@@ -126,12 +126,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         return address;
     }
 
-    /*
-	 * Scheduled a list of programs to be run.
-	 * 
-	 * 
-	 * @param programs the programs to schedule
-     */
+
     public synchronized void schedule(List<Program> programs) throws MemoryFault {
 
         this.machine.memory.setBase(0);
@@ -429,8 +424,10 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     @Override
     public synchronized void syscall(int savedProgramCounter, int callNumber) {
         //  leave this code here
+        System.out.println("We are in SysCall");
 
         CheckValid.syscallNumber(callNumber);
+        System.out.println("after checkvalid");
 
         this.saveRegisters(savedProgramCounter);
 
@@ -442,13 +439,15 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 sbrk(machine.cpu.acc);
                 break;
             case WRITE_CONSOLE:
+                System.out.println("We are in Write Console");
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
-                if (queues[Machine.CONSOLE].isEmpty() == false) {
+                 if (queues[Machine.CONSOLE].isEmpty() == false) {
                     queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
                 } else {
                     write_console(machine.cpu.acc);
                 }
-                break;
+                   currentProcess = this.chooseNextProcess();
+             break;
         }
 
         this.restoreRegisters();
@@ -462,7 +461,6 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
 	 * 
 	 * @param programCounter -- the program counter of the instruction after the
 	 * one that caused the trap.
-	 * 
 	 * @param deviceNumber -- the device number that is interrupting.
      */
     @Override

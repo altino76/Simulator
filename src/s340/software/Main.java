@@ -26,7 +26,7 @@ public class Main
         //grab a program from collection, add to list, schedule list of programs
         List<Program> programs = new LinkedList<>();
         
-        programs.add(ProgramList.test1());
+        programs.add(ProgramList.p1());
         
        
         

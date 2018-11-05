@@ -11,7 +11,7 @@ import s340.software.os.OperatingSystem;
 public class Machine
 {
 	// memory size
-	public final static int MEMORY_SIZE = 204;
+	public final static int MEMORY_SIZE = 20000;
 
 	// device numbers
 	public final  int KEYBOARD = 0;

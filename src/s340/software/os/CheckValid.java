@@ -44,6 +44,7 @@ public class CheckValid
 	{
 		if (n < 0 || n >= SystemCall.NUM_SYSTEM_CALLS)
 		{
+                //    System.out.println("hello");
 			throw new IllegalArgumentException("Unknown system call number : " + n);
 		}
 	}

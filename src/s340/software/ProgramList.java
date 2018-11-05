@@ -18,21 +18,29 @@ public class ProgramList {
     
     
     public static Program p1(){
+        System.out.println("we are in the programlist");
          
         ProgramBuilder b1 = new ProgramBuilder();
-        b1.size(5); //program instruction goes to space 31; +5 units of data space to put stuff in
-        
-        //We reduced the number of 2's we're storing from 10 to 5 because we realized the assignment instructions 
+        b1.size(100);
+        b1.loadi(10);
         b1.store(40);
-//        b1.store(41);
-//        b1.store(42);
-//        b1.store(43);
-//        b1.store(44);
-     //   b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.store(41);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.store(42);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.store(43);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.store(44);
+//        b1.output();
+//        System.out.println("The program before write Console");
+//        b1.syscall(SystemCall.WRITE_CONSOLE);
+//        System.out.println("The program after write Console");
         b1.end();
+//        System.out.println("The program is able to end");
         
         Program p1 = b1.build();
-        System.out.println(p1);
+//        System.out.println(p1);
         return p1;
     }
     

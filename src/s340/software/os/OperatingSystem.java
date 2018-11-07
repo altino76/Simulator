@@ -440,13 +440,14 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             case WRITE_CONSOLE:
                 System.out.println("We are in Write Console");
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
-                if (queues[Machine.CONSOLE].isEmpty() == false) {
-                    queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
-                    System.err.println("we are in the if statement");
-                } else {
-                    System.err.println("we are in the else statement");
 
+                queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+                if (queues[Machine.CONSOLE].size() == 1) {
                     write_console(machine.cpu.acc);
+                //    queues[Machine.CONSOLE].remove();
+                } else {
+                    queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+
                 }
                 currentProcess = this.chooseNextProcess();
                 break;

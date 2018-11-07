@@ -22,7 +22,7 @@ public class ProgramList {
          
         ProgramBuilder b1 = new ProgramBuilder();
         b1.size(100);
-        b1.loadi(10);
+        b1.loadi(18);
         b1.store(40);
         b1.syscall(SystemCall.WRITE_CONSOLE);
         b1.store(41);

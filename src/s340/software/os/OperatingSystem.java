@@ -126,7 +126,6 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         return address;
     }
 
-
     public synchronized void schedule(List<Program> programs) throws MemoryFault {
 
         this.machine.memory.setBase(0);
@@ -394,7 +393,7 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 currentProcess = this.chooseNextProcess();
                 break;
             case Trap.END:
-               //set prog to finished and choose new prog
+                //set prog to finished and choose new prog
                 //registers already saved
                 this.processTable[this.currentProcess].setStatus(ProcessState.END);
                 currentProcess = this.chooseNextProcess();
@@ -441,13 +440,16 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             case WRITE_CONSOLE:
                 System.out.println("We are in Write Console");
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
-                 if (queues[Machine.CONSOLE].isEmpty() == false) {
+                if (queues[Machine.CONSOLE].isEmpty() == false) {
                     queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+                    System.err.println("we are in the if statement");
                 } else {
+                    System.err.println("we are in the else statement");
+
                     write_console(machine.cpu.acc);
                 }
-                   currentProcess = this.chooseNextProcess();
-             break;
+                currentProcess = this.chooseNextProcess();
+                break;
         }
 
         this.restoreRegisters();
@@ -475,4 +477,3 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     }
 
 }
-

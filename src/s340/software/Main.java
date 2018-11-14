@@ -27,8 +27,8 @@ public class Main
         List<Program> programs = new LinkedList<>();
         
         programs.add(ProgramList.p1());
-//        programs.add(ProgramList.p1());
-//        programs.add(ProgramList.p1());
+        programs.add(ProgramList.p1());
+        programs.add(ProgramList.p1());
              
 
 

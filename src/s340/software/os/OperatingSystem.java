@@ -423,10 +423,10 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     @Override
     public synchronized void syscall(int savedProgramCounter, int callNumber) {
         //  leave this code here
-        System.out.println("We are in SysCall");
+       // System.out.println("We are in SysCall");
 
         CheckValid.syscallNumber(callNumber);
-        System.out.println("after checkvalid");
+       // System.out.println("after checkvalid");
 
         this.saveRegisters(savedProgramCounter);
 
@@ -438,18 +438,22 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 sbrk(machine.cpu.acc);
                 break;
             case WRITE_CONSOLE:
-                System.out.println("We are in Write Console");
+            //    System.out.println("We are in Write Console");
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
 
                 queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+            //    System.out.println("this is the size of the queue: " + queues[Machine.CONSOLE].size());
                 if (queues[Machine.CONSOLE].size() == 1) {
                     write_console(machine.cpu.acc);
-                //    queues[Machine.CONSOLE].remove();
-                } else {
-                    queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+                    queues[Machine.CONSOLE].remove();
+                //    System.out.println("this is the size of the queue in the if statement: " + queues[Machine.CONSOLE].size());
 
+                    //    queues[Machine.CONSOLE].remove();
                 }
-                currentProcess = this.chooseNextProcess();
+                else{
+                    currentProcess = this.chooseNextProcess();
+                }
+               
                 break;
         }
 

@@ -18,7 +18,7 @@ public class ProgramList {
     
     
     public static Program p1(){
-        System.out.println("we are in the programlist");
+    //    System.out.println("we are in the programlist");
          
         ProgramBuilder b1 = new ProgramBuilder();
         b1.size(100);

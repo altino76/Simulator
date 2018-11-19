@@ -14,12 +14,10 @@ import s340.software.os.SystemCall;
  * @author natha
  */
 public class ProgramList {
-    
-    
-    
-    public static Program p1(){
-    //    System.out.println("we are in the programlist");
-         
+
+    public static Program p1() {
+        //    System.out.println("we are in the programlist");
+
         ProgramBuilder b1 = new ProgramBuilder();
         b1.size(100);
         b1.loadi(18);
@@ -32,23 +30,14 @@ public class ProgramList {
         b1.store(43);
         b1.syscall(SystemCall.WRITE_CONSOLE);
         b1.store(44);
-//        b1.output();
-//        System.out.println("The program before write Console");
-//        b1.syscall(SystemCall.WRITE_CONSOLE);
-//        System.out.println("The program after write Console");
         b1.end();
-//        System.out.println("The program is able to end");
-        
+
         Program p1 = b1.build();
-//        System.out.println(p1);
         return p1;
     }
-    
-    
-    
-    
+
     public static Program test1() {
-        
+
         //Program is mostly blank, it exists and takes up space for testing purposes. Used in Proj 2
         ProgramBuilder b1 = new ProgramBuilder();
         b1.size(18);

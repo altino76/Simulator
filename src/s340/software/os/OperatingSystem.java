@@ -177,6 +177,20 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
 
     }
 
+    public void write(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
+        this.machine.devices[deviceNumber].controlRegister.register[0] = DeviceControllerOperations.WRITE;
+        this.machine.devices[deviceNumber].controlRegister.register[1] = platterNumber;
+        this.machine.devices[deviceNumber].controlRegister.register[2] = startPlatter;
+        this.machine.devices[deviceNumber].controlRegister.register[3] = length;
+        this.machine.devices[deviceNumber].controlRegister.latch();
+    }
+
+    public void read(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
+        this.machine.devices[deviceNumber].controlRegister.register[0] = DeviceControllerOperations.READ;
+        this.machine.devices[deviceNumber].controlRegister.register[1] = startPlatter;
+
+    }
+
     public int sbrk(int acc) {
         //main structure for the brokerage of sbrk()
         boolean keepGoing = true;
@@ -423,10 +437,10 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
     @Override
     public synchronized void syscall(int savedProgramCounter, int callNumber) {
         //  leave this code here
-       // System.out.println("We are in SysCall");
+        // System.out.println("We are in SysCall");
 
         CheckValid.syscallNumber(callNumber);
-       // System.out.println("after checkvalid");
+        // System.out.println("after checkvalid");
 
         this.saveRegisters(savedProgramCounter);
 
@@ -438,23 +452,18 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 sbrk(machine.cpu.acc);
                 break;
             case WRITE_CONSOLE:
-            //    System.out.println("We are in Write Console");
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
 
                 queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
-            //    System.out.println("this is the size of the queue: " + queues[Machine.CONSOLE].size());
                 if (queues[Machine.CONSOLE].size() == 1) {
                     write_console(machine.cpu.acc);
                     queues[Machine.CONSOLE].remove();
-                //    System.out.println("this is the size of the queue in the if statement: " + queues[Machine.CONSOLE].size());
 
-                    //    queues[Machine.CONSOLE].remove();
-                }
-                else{
+                } else {
                     currentProcess = this.chooseNextProcess();
+                    break;
                 }
-               
-                break;
+
         }
 
         this.restoreRegisters();
@@ -478,6 +487,9 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             return;
         }
         //  end of code to leave
+//        System.out.println("we are in the interrupt");
+//        machine.interruptRegisters.register[deviceNumber] = false;
+//        queues[deviceNumber].remove();
 
     }
 

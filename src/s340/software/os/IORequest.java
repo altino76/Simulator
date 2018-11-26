@@ -12,10 +12,18 @@ import s340.software.ProcessControlBlock;
  * @author altino
  */
 public class IORequest {
-    private ProcessControlBlock block;
+    //public ProcessControlBlock block;
+    private int current;
     
-    public IORequest(ProcessControlBlock block)
+//    public IORequest(ProcessControlBlock block)
+//    {
+//        this.block = block;
+//    }
+    public IORequest(int index)
     {
-        this.block = block;
+        current = index;
+    }
+    public int getCurrent(){
+        return current;
     }
 }

@@ -7,6 +7,7 @@ package s340.software.os;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -177,11 +178,12 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
 
     }
 
-    public void write(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
+    public void write_disk(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
         this.machine.devices[deviceNumber].controlRegister.register[0] = DeviceControllerOperations.WRITE;
         this.machine.devices[deviceNumber].controlRegister.register[1] = platterNumber;
         this.machine.devices[deviceNumber].controlRegister.register[2] = startPlatter;
         this.machine.devices[deviceNumber].controlRegister.register[3] = length;
+        //    this.machine.devices[deviceNumber].controlRegister.register[4] = store;
         this.machine.devices[deviceNumber].controlRegister.latch();
     }
 
@@ -451,18 +453,24 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             case SBRK:
                 sbrk(machine.cpu.acc);
                 break;
+//            case WRITE_DISK:
+//                this.processTable[currentProcess].setStatus(ProcessState.WAITING);
+//                queues[Machine.]
+//            
+
             case WRITE_CONSOLE:
                 this.processTable[currentProcess].setStatus(ProcessState.WAITING);
 
-                queues[Machine.CONSOLE].add(new IORequest(this.processTable[currentProcess]));
+                queues[Machine.CONSOLE].add(new IORequest(currentProcess));
                 if (queues[Machine.CONSOLE].size() == 1) {
                     write_console(machine.cpu.acc);
-                    queues[Machine.CONSOLE].remove();
 
-                } else {
-                    currentProcess = this.chooseNextProcess();
-                    break;
                 }
+//                System.err.println("PC: " + this.processTable[currentProcess].getPc());
+//                this.saveRegisters(this.processTable[currentProcess].);
+                //               this.saveRegisters(savedProgramCounter);
+                currentProcess = this.chooseNextProcess();
+                break;
 
         }
 
@@ -487,10 +495,25 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
             return;
         }
         //  end of code to leave
-//        System.out.println("we are in the interrupt");
-//        machine.interruptRegisters.register[deviceNumber] = false;
-//        queues[deviceNumber].remove();
+        machine.interruptRegisters.register[deviceNumber] = false;
+        //    queues[deviceNumber].element().block.setStatus(ProcessState.RUNNING);
+        IORequest finished = queues[deviceNumber].remove();
+        this.processTable[finished.getCurrent()].setStatus(ProcessState.READY);
+        switch (deviceNumber) {
+            case Machine.CONSOLE:
 
+                if (queues[deviceNumber].isEmpty() == false) {
+                    int currentNum = queues[deviceNumber].peek().getCurrent();
+                    write_console(this.processTable[currentNum].getAcc());
+//  i think it hass something to do with the setting the current process to the IO request process
+                }
+                break;
+        }
+               
+                this.restoreRegisters();
+
+        }
+   
     }
 
-}
+

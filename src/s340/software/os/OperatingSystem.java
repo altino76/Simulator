@@ -26,6 +26,7 @@ import s340.software.ProcessControlBlock;
 import s340.software.ProcessState;
 import static s340.software.os.SystemCall.SBRK;
 import static s340.software.os.SystemCall.WRITE_CONSOLE;
+import static s340.software.os.SystemCall.WRITE_DISK;
 
 /*
  * The operating system that controls the software running on the S340 CPU.
@@ -183,13 +184,15 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
         this.machine.devices[deviceNumber].controlRegister.register[1] = platterNumber;
         this.machine.devices[deviceNumber].controlRegister.register[2] = startPlatter;
         this.machine.devices[deviceNumber].controlRegister.register[3] = length;
-        //    this.machine.devices[deviceNumber].controlRegister.register[4] = store;
         this.machine.devices[deviceNumber].controlRegister.latch();
     }
 
-    public void read(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
+    public void read_disk(int deviceNumber, int platterNumber, int startPlatter, int length, int store) {
         this.machine.devices[deviceNumber].controlRegister.register[0] = DeviceControllerOperations.READ;
-        this.machine.devices[deviceNumber].controlRegister.register[1] = startPlatter;
+        this.machine.devices[deviceNumber].controlRegister.register[1] = platterNumber;
+        this.machine.devices[deviceNumber].controlRegister.register[2] = startPlatter;
+        this.machine.devices[deviceNumber].controlRegister.register[3] = length;
+        this.machine.devices[deviceNumber].controlRegister.latch();
 
     }
 
@@ -466,9 +469,19 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                     write_console(machine.cpu.acc);
 
                 }
-//                System.err.println("PC: " + this.processTable[currentProcess].getPc());
-//                this.saveRegisters(this.processTable[currentProcess].);
-                //               this.saveRegisters(savedProgramCounter);
+
+                currentProcess = this.chooseNextProcess();
+                break;
+            case WRITE_DISK:
+                int device = this.processTable[currentProcess].getAcc();
+                //int myDevice = machine.memory.
+                
+                
+                // if (queues[Machine.].isEmpty()) {
+                    
+                   // write_console(machine.cpu.acc);
+               // } 
+                queues[Machine.CONSOLE].add(new IORequest(currentProcess));
                 currentProcess = this.chooseNextProcess();
                 break;
 
@@ -505,15 +518,12 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 if (queues[deviceNumber].isEmpty() == false) {
                     int currentNum = queues[deviceNumber].peek().getCurrent();
                     write_console(this.processTable[currentNum].getAcc());
-//  i think it hass something to do with the setting the current process to the IO request process
                 }
                 break;
         }
-               
-                this.restoreRegisters();
 
-        }
-   
+        this.restoreRegisters();
+
     }
 
-
+}

@@ -5,6 +5,7 @@
  */
 package s340.software;
 
+import s340.hardware.Machine;
 import s340.software.os.Program;
 import s340.software.os.ProgramBuilder;
 import s340.software.os.SystemCall;
@@ -34,6 +35,64 @@ public class ProgramList {
 
         Program p1 = b1.build();
         return p1;
+    }
+     public static Program diskTest()
+    {
+        ProgramBuilder b2 = new ProgramBuilder();
+        
+        
+        int device  = Machine.DISK1;
+        
+        int platter = 3;
+        
+        int start = 31;
+        
+        int length = 20;
+        
+        int memoryLocation = 310;
+        
+        int stored = 1;
+        
+        int parameterLocation = 300;
+        
+        
+        
+        b2.size(1000);
+        
+        for(int i = 200; i < 221; i++)
+        {
+            b2.loadi(stored);
+            b2.store(i);
+            stored++;
+        }
+        
+        b2.loadi(device);
+        b2.store(parameterLocation);
+        
+        b2.loadi(start);
+        b2.store(parameterLocation + 1);
+        
+        b2.loadi(length);
+        b2.store(parameterLocation + 2);
+        
+        b2.loadi(memoryLocation);
+        b2.store(parameterLocation + 3);
+        
+        b2.loadi(stored);
+        b2.store(parameterLocation + 4);
+        
+        b2.loadi(parameterLocation);
+        b2.syscall(SystemCall.WRITE_DISK);
+        
+        
+        
+        
+       
+        
+        Program p = b2.build();
+        
+        return p;
+        
     }
 
     public static Program test1() {

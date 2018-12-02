@@ -473,7 +473,24 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 currentProcess = this.chooseNextProcess();
                 break;
             case WRITE_DISK:
-                int device = this.processTable[currentProcess].getAcc();
+                int tempacc = this.processTable[currentProcess].getAcc();
+                 int device = tempacc;
+        {
+            try {
+                int temp = machine.memory.load(2+tempacc);
+                System.err.println("it should be 31: " + temp);
+            } catch (MemoryFault ex) {
+                Logger.getLogger(OperatingSystem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+                for(int i=tempacc+2; i<tempacc+3; i++ )
+                {
+                    
+                   
+                   
+                }
+                
+         
                 //int myDevice = machine.memory.
                 
                 

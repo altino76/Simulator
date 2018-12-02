@@ -41,6 +41,7 @@ public class ProgramList {
         ProgramBuilder b2 = new ProgramBuilder();
         
         
+        
         int device  = Machine.DISK1;
         
         int platter = 3;
@@ -83,6 +84,7 @@ public class ProgramList {
         
         b2.loadi(parameterLocation);
         b2.syscall(SystemCall.WRITE_DISK);
+        b2.end();
         
         
         

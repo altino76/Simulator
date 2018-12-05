@@ -36,65 +36,60 @@ public class ProgramList {
         Program p1 = b1.build();
         return p1;
     }
-     public static Program diskTest()
-    {
+
+    public static Program diskTest() {
         ProgramBuilder b2 = new ProgramBuilder();
-        
-        
-        
-        int device  = Machine.DISK1;
-        
-        int platter = 3;
-        
-        int start = 31;
-        
-        int length = 20;
-        
-        int memoryLocation = 310;
-        
-        int stored = 1;
-        
+
+        int device = Machine.DISK1;
+
+        int platter = 3; //platter number
+
+        int start = 31;//start location of platter
+
+        int length = 20; //number of integers to be written
+
+        int memoryLocation = 312; // where in memory we begin writing
+
         int parameterLocation = 300;
-        
-        
-        
+
+        int stored = 1;
+
         b2.size(1000);
-        
-        for(int i = 200; i < 221; i++)
-        {
+
+        for (int i = 200; i < 221; i++) {
             b2.loadi(stored);
             b2.store(i);
             stored++;
         }
-        
+
         b2.loadi(device);
         b2.store(parameterLocation);
         
-        b2.loadi(start);
+        b2.loadi(platter);
         b2.store(parameterLocation + 1);
-        
-        b2.loadi(length);
+
+        b2.loadi(start);
         b2.store(parameterLocation + 2);
-        
-        b2.loadi(memoryLocation);
+
+        b2.loadi(length);
         b2.store(parameterLocation + 3);
         
-        b2.loadi(stored);
-        b2.store(parameterLocation + 4);
+                
         
+        b2.loadi(memoryLocation);
+        b2.store(parameterLocation + 4);
+
+        b2.loadi(stored);
+        b2.store(parameterLocation + 5);
+
         b2.loadi(parameterLocation);
         b2.syscall(SystemCall.WRITE_DISK);
         b2.end();
-        
-        
-        
-        
-       
-        
+
         Program p = b2.build();
-        
+
         return p;
-        
+
     }
 
     public static Program test1() {

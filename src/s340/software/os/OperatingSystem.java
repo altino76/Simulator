@@ -24,6 +24,10 @@ import s340.hardware.exception.MemoryFault;
 import s340.software.FreeSpace;
 import s340.software.ProcessControlBlock;
 import s340.software.ProcessState;
+import s340.software.os.CheckValid;
+import s340.software.os.IORequest;
+import s340.software.os.Program;
+import s340.software.os.ProgramBuilder;
 import static s340.software.os.SystemCall.SBRK;
 import static s340.software.os.SystemCall.WRITE_CONSOLE;
 import static s340.software.os.SystemCall.WRITE_DISK;
@@ -474,30 +478,38 @@ public class OperatingSystem implements IInterruptHandler, ISystemCallHandler, I
                 break;
             case WRITE_DISK:
                 int tempacc = this.processTable[currentProcess].getAcc();
-                 int device = tempacc;
-        {
-            try {
-                int temp = machine.memory.load(2+tempacc);
-                System.err.println("it should be 31: " + temp);
-            } catch (MemoryFault ex) {
-                Logger.getLogger(OperatingSystem.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-                for(int i=tempacc+2; i<tempacc+3; i++ )
-                {
+                //device = machine.memory.load(tempacc);
+                try {
+                    int deviceNum = machine.memory.load(tempacc);
+                    System.err.println("it should be device# 2: " + deviceNum);
                     
-                   
-                   
+                    int platterNum = machine.memory.load(tempacc+1);
+                    System.err.println("it should be platterNum = 3: " + platterNum);
+                    
+                    int startNum = machine.memory.load(tempacc+2);
+                    System.err.println("it should be startNum = 31: " + startNum);
+                    
+                    int lengthNum = machine.memory.load(tempacc+3);
+                    System.err.println("it should be lengthNum = 20: " + lengthNum);
+                    
+                    int memoryLoc = machine.memory.load(tempacc+4);
+                    System.err.println("it should be memoryLoc @ 312: " + memoryLoc);
+                    
+                    int storedLoc = machine.memory.load(tempacc+5);
+                    System.err.println("it should be stored = 1: " + storedLoc);
+                    
+                } catch (MemoryFault ex) {
+                    Logger.getLogger(OperatingSystem.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-         
+
+                for (int i = tempacc + 2; i < tempacc + 3; i++) {
+
+                }
+
                 //int myDevice = machine.memory.
-                
-                
                 // if (queues[Machine.].isEmpty()) {
-                    
-                   // write_console(machine.cpu.acc);
-               // } 
+                // write_console(machine.cpu.acc);
+                // } 
                 queues[Machine.CONSOLE].add(new IORequest(currentProcess));
                 currentProcess = this.chooseNextProcess();
                 break;

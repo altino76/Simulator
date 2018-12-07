@@ -4,26 +4,49 @@
  * and open the template in the editor.
  */
 package s340.software.os;
-
 import s340.software.ProcessControlBlock;
-
 /**
  *
  * @author altino
  */
 public class IORequest {
-    //public ProcessControlBlock block;
-    private int current;
+    private int programNumber;
+    private int devOp;
+    private int startLocation;
+    private int pLength;
     
-//    public IORequest(ProcessControlBlock block)
-//    {
-//        this.block = block;
-//    }
-    public IORequest(int index)
+    
+    public IORequest(int index, int op)
     {
-        current = index;
+        programNumber = index;
+        devOp = op;
     }
-    public int getCurrent(){
-        return current;
+    //For disk scheduling
+    public IORequest(int index, int op, int start, int length)
+    {
+        programNumber = index;
+        devOp = op;
+        startLocation = start;
+        pLength = length;
     }
+    public int getStartLocation() {
+        return startLocation;
+    }
+    public int getpLength() {
+        return pLength;
+    }
+
+    public int getProgramNumber() {
+        return programNumber;
+    }
+    public int getDevOp() {
+        return devOp;
+    }
+    @Override
+    public String toString() {
+        return "IORequest{" + "programNumber=" + programNumber + ", devOp=" + devOp + ", startLocation=" + startLocation + ", pLength=" + pLength + '}';
+    }
+    
+    
 }
+

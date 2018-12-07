@@ -4,21 +4,21 @@
  * and open the template in the editor.
  */
 package s340.software;
-
+import s340.hardware.Device;
 import s340.hardware.Machine;
 import s340.software.os.Program;
 import s340.software.os.ProgramBuilder;
 import s340.software.os.SystemCall;
-
 /**
  *
+ *
+ *
  * @author natha
+ *
  */
 public class ProgramList {
-
     public static Program p1() {
-        //    System.out.println("we are in the programlist");
-
+        System.out.println("we are in the programlist");
         ProgramBuilder b1 = new ProgramBuilder();
         b1.size(100);
         b1.loadi(18);
@@ -31,72 +31,34 @@ public class ProgramList {
         b1.store(43);
         b1.syscall(SystemCall.WRITE_CONSOLE);
         b1.store(44);
+//        b1.output();
+//        System.out.println("The program before write Console");
+//        b1.syscall(SystemCall.WRITE_CONSOLE);
+//        System.out.println("The program after write Console");
         b1.end();
-
+//        System.out.println("The program is able to end");
         Program p1 = b1.build();
+//        System.out.println(p1);
         return p1;
     }
-
-    public static Program diskTest() {
-        ProgramBuilder b2 = new ProgramBuilder();
-
-        int device = Machine.DISK1;
-
-        int platter = 3; //platter number
-
-        int start = 31;//start location of platter
-
-        int length = 20; //number of integers to be written
-
-        int memoryLocation = 312; // where in memory we begin writing
-
-        int parameterLocation = 300;
-
-        int stored = 1;
-
-        b2.size(1000);
-
-        for (int i = 200; i < 221; i++) {
-            b2.loadi(stored);
-            b2.store(i);
-            stored++;
-        }
-
-        b2.loadi(device);
-        b2.store(parameterLocation);
-        
-        b2.loadi(platter);
-        b2.store(parameterLocation + 1);
-
-        b2.loadi(start);
-        b2.store(parameterLocation + 2);
-
-        b2.loadi(length);
-        b2.store(parameterLocation + 3);
-        
-                
-        
-        b2.loadi(memoryLocation);
-        b2.store(parameterLocation + 4);
-
-        b2.loadi(stored);
-        b2.store(parameterLocation + 5);
-
-        b2.loadi(parameterLocation);
-        b2.syscall(SystemCall.WRITE_DISK);
-        b2.end();
-
-        Program p = b2.build();
-
-        return p;
-
-    }
-
-    public static Program test1() {
-
+    public static Program test1(int value) {
         //Program is mostly blank, it exists and takes up space for testing purposes. Used in Proj 2
         ProgramBuilder b1 = new ProgramBuilder();
-        b1.size(18);
+        b1.size(20);
+        b1.loadi(value);
+        for (int i = 40; i < 45; i++) {
+            b1.store(i);
+        }
+        b1.load(40);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.load(41);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.load(42);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.load(43);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
+        b1.load(44);
+        b1.syscall(SystemCall.WRITE_CONSOLE);
         b1.end();
         Program p = b1.build();
         return p;
@@ -124,4 +86,61 @@ public class ProgramList {
 //        Program p = b1.build();
 //        return p;
 //    }
+    public static Program readDiskTest() {
+        ProgramBuilder b3 = new ProgramBuilder();
+        b3.size(200);
+        int device = Machine.DISK1;
+        int platter = 3;
+        int start = 3;
+        int length = 5;
+        int memoryLocation = 60;
+        int parameterLocation = 50;
+        b3.loadi(device);
+        b3.store(parameterLocation);
+        b3.loadi(platter);
+        b3.store(parameterLocation + 1);
+        b3.loadi(start);
+        b3.store(parameterLocation + 2);
+        b3.loadi(length);
+        b3.store(parameterLocation + 3);
+        b3.loadi(memoryLocation);
+        b3.store(parameterLocation + 4);
+        b3.loadi(parameterLocation);
+        b3.syscall(SystemCall.READ_DISK);
+        b3.end();
+        Program p = b3.build();
+        return p;
+    }
+    public static Program diskTest() {
+        ProgramBuilder b2 = new ProgramBuilder();
+        b2.size(200);
+        int device = Machine.DISK1;
+        int platter = 3;
+        int start = 3;
+        int length = 5;
+        int memoryLocation = 60;
+        int stored = 100;
+        int parameterLocation = 50;
+        for (int i = memoryLocation; i < memoryLocation + length; i++) {
+            b2.loadi(stored);
+            b2.store(i);
+            stored++;
+        }
+        b2.loadi(device);
+        b2.store(parameterLocation);
+        b2.loadi(platter);
+        b2.store(parameterLocation + 1);
+        b2.loadi(start);
+        b2.store(parameterLocation + 2);
+        b2.loadi(length);
+        b2.store(parameterLocation + 3);
+        b2.loadi(memoryLocation);
+        b2.store(parameterLocation + 4);
+        b2.loadi(parameterLocation);
+        b2.syscall(SystemCall.WRITE_DISK);
+        b2.end();
+        Program p = b2.build();
+        System.out.println(p);
+        return p;
+    }
 }

@@ -21,8 +21,8 @@ public class Main {
         machine.powerUp(os);
 
         List<Program> programs = new LinkedList<>();
-
         programs.add(ProgramList.diskTest());
+        programs.add(ProgramList.readDiskTest());
 
         os.schedule(programs);
         System.out.println(programs);
